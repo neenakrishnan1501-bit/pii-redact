@@ -118,4 +118,4 @@ const redactor = new Redactor({ matchers: [new CustomSecretMatcher()] });
 
 ## License
 
-ISC License.
+MIT License.
