@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PII Redact Interactive Demo</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; background: #f0f2f5; color: #333; }
+        h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        p { margin-top: 0; color: #666; font-size: 0.9rem; }
+        .container { display: flex; gap: 20px; margin-top: 20px; max-width: 1200px; }
+        .panel { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        textarea { width: 100%; height: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 14px; box-sizing: border-box; resize: vertical; }
+        .output { background: #fff; width: 100%; height: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 14px; white-space: pre-wrap; overflow-y: auto; box-sizing: border-box; }
+        button { padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; align-self: flex-start; }
+        button:hover { background: #0056b3; }
+        .strategies { display: flex; gap: 15px; margin-bottom: 10px; font-size: 14px;}
+    </style>
+</head>
+<body>
+
+    <h1>PII Redact Demo</h1>
+    <p>Test the TypeScript library purely in your browser using DefaultMatchers.</p>
+
+    <div class="strategies">
+        <label><strong>Strategy:</strong></label>
+        <label><input type="radio" name="strategy" value="replace" checked> Replace</label>
+        <label><input type="radio" name="strategy" value="mask"> Mask</label>
+        <label><input type="radio" name="strategy" value="hash"> Hash</label>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <label for="input"><strong>Raw Text Input:</strong></label>
+            <textarea id="input" placeholder="Type text with PII here (e.g. My email is john@example.com and phone is 555-123-4567...)"></textarea>
+            <button id="redact-btn">Redact Text</button>
+        </div>
+
+        <div class="panel">
+            <label><strong>Redacted Output:</strong></label>
+            <div id="output" class="output"></div>
+        </div>
+    </div>
+
+    <!-- The bundled app containing our library -->
+    <script src="dist/app.bundle.js"></script>
+</body>
+</html>

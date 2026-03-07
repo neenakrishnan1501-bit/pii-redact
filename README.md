@@ -154,6 +154,14 @@ class CustomSecretMatcher implements Matcher {
 const redactor = new Redactor({ matchers: [new CustomSecretMatcher()] });
 ```
 
+## Running the Demo
+
+A simple static HTML demo is included in the `demo/` folder to test the library purely in your browser.
+
+1. Navigate to the `demo` directory: `cd demo`
+2. Open `index.html` in any web browser (e.g. `open index.html` on Mac).
+3. Type any text and test the different redaction strategies!
+
 ## License
 
 MIT License.
