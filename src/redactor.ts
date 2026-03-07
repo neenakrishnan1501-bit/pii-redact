@@ -1,5 +1,6 @@
 import { Matcher, RedactionStrategy, RedactorConfig } from './types';
 import { ReplaceStrategy } from './strategies';
+import { parse, TextNode, HTMLElement } from 'node-html-parser';
 
 export class Redactor {
   private matchers: Matcher[];
@@ -79,5 +80,38 @@ export class Redactor {
 
     // Number, boolean, etc.
     return obj;
+  }
+
+  /**
+   * Safely redacts PII from an HTML string without corrupting tags or attributes.
+   */
+  public redactHtml(htmlString: string): string {
+    if (!htmlString || typeof htmlString !== 'string') return htmlString;
+
+    const root = parse(htmlString);
+
+    const traverse = (node: any) => {
+      // If it's a TextNode, redact its content safely
+      if (node.nodeType === 3) { // 3 is Node.TEXT_NODE in DOM, represented by TextNode here
+        const textNode = node as TextNode;
+        if (textNode.rawText && textNode.rawText.trim()) {
+          // Replace rawText with the redacted version
+          textNode.rawText = this.redact(textNode.rawText);
+        }
+      } else if (node.nodeType === 1) { // 1 is Node.ELEMENT_NODE
+        const element = node as HTMLElement;
+        // Do not traverse into <script> or <style> tags to avoid breaking logic/css
+        if (element.tagName && ['SCRIPT', 'STYLE'].includes(element.tagName.toUpperCase())) {
+          return;
+        }
+        for (const child of element.childNodes) {
+          traverse(child);
+        }
+      }
+    };
+
+    traverse(root);
+
+    return root.toString();
   }
 }

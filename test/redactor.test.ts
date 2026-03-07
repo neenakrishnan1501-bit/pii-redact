@@ -38,6 +38,45 @@ describe('Redactor', () => {
     });
   });
 
+  describe('HTML Redaction', () => {
+    it('should redact visible text but not corrupt HTML tags or attributes', () => {
+      const redactor = new Redactor({ matchers: [EmailMatcher, PhoneMatcher] });
+      const html = `<div id="user-contact" data-phone="(555) 123-4567">
+        <p>Contact me at admin@example.com!</p>
+        <a href="mailto:admin@example.com">Send Email to admin@example.com</a>
+        <span>Call: (555) 123-4567</span>
+      </div>`;
+
+      const redactedHtml = redactor.redactHtml(html);
+
+      // Visible text should be redacted
+      expect(redactedHtml).toContain('<p>Contact me at [EMAIL]!</p>');
+      expect(redactedHtml).toContain('Send Email to [EMAIL]');
+      expect(redactedHtml).toContain('Call: [PHONE]');
+
+      // Attributes should remain strictly UNCHANGED
+      expect(redactedHtml).toContain('href="mailto:admin@example.com"');
+      expect(redactedHtml).toContain('data-phone="(555) 123-4567"');
+    });
+
+    it('should ignore script and style tags', () => {
+      const redactor = new Redactor({ matchers: [EmailMatcher] });
+      const html = `
+        <script>const email = "admin@example.com";</script>
+        <style>.email::after { content: "admin@example.com"; }</style>
+        <p>Email: admin@example.com</p>
+      `;
+
+      const redactedHtml = redactor.redactHtml(html);
+      
+      // Script and style tags must remain completely untouched
+      expect(redactedHtml).toContain('const email = "admin@example.com";');
+      expect(redactedHtml).toContain('content: "admin@example.com";');
+      // Paragraph text should be redacted
+      expect(redactedHtml).toContain('<p>Email: [EMAIL]</p>');
+    });
+  });
+
   describe('Strategies', () => {
     it('should use ReplaceStrategy by default', () => {
       const redactor = new Redactor({ matchers: [EmailMatcher] });

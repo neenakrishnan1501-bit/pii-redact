@@ -55,6 +55,33 @@ console.log(safePayload.user.contactDetails); // "Contact me at [PHONE]"
 console.log(safePayload.user.emails[0]);      // "[EMAIL]"
 ```
 
+### HTML Redaction
+
+If you have raw HTML and want to redact the visible text *without* breaking tags or attributes, use `.redactHtml()`:
+
+```typescript
+import { Redactor, DefaultMatchers } from 'pii-redact';
+
+const redactor = new Redactor({ matchers: DefaultMatchers });
+
+const html = `
+  <div id="contact-info" data-email="admin@example.com">
+    <p>Please contact me at admin@example.com or call (555) 123-4567.</p>
+    <a href="mailto:admin@example.com">Email Admin</a>
+  </div>
+`;
+
+const safeHtml = redactor.redactHtml(html);
+
+console.log(safeHtml);
+/* Output:
+  <div id="contact-info" data-email="admin@example.com">
+    <p>Please contact me at [EMAIL] or call [PHONE].</p>
+    <a href="mailto:admin@example.com">Email Admin</a>
+  </div>
+*/
+```
+
 ## Changing the Redaction Strategy
 
 By default, the `Redactor` uses the `ReplaceStrategy` (which replaces matches with e.g. `[EMAIL]`). You can configure this globally:
