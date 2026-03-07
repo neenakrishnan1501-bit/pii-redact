@@ -99,3 +99,5 @@ export const DateOfBirthMatcher = new RegexMatcher(
   // Matches common DOB formats: MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, MM-DD-YYYY, etc.
   /\b(?:(?:0?[1-9]|1[0-2])[-/](?:0?[1-9]|[12][0-9]|3[01])[-/](?:19|20)\d{2}|(?:19|20)\d{2}[-/](?:0?[1-9]|1[0-2])[-/](?:0?[1-9]|[12][0-9]|3[01]))\b/g,
 );
+
+export * from './nlp';
