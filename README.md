@@ -18,6 +18,17 @@ npm install pii-redact
 
 ## Basic Usage
 
+### Understanding DefaultMatchers
+
+`DefaultMatchers` is a convenience array exported by the library that contains all the standard, built-in matchers. If you only want to redact specific types of PII (e.g., only emails and phone numbers), you can pass an array of just the matchers you want:
+
+```typescript
+import { Redactor, EmailMatcher, PhoneMatcher } from 'pii-redact';
+
+// This redactor will ONLY look for emails and phone numbers
+const redactor = new Redactor({ matchers: [EmailMatcher, PhoneMatcher] });
+```
+
 ### Unstructured Text Redaction
 
 ```typescript
