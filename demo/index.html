@@ -14,13 +14,26 @@
         .output { background: #fff; width: 100%; height: 300px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 14px; white-space: pre-wrap; overflow-y: auto; box-sizing: border-box; }
         button { padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; align-self: flex-start; }
         button:hover { background: #0056b3; }
-        .strategies { display: flex; gap: 15px; margin-bottom: 10px; font-size: 14px;}
+        .strategies { display: flex; gap: 15px; margin-bottom: 20px; font-size: 14px; background: #fff; padding: 15px; border: 1px solid #ccc; border-radius: 4px; }
+        .info { font-size: 13px; color: #555; background: #e9ecef; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #007bff; }
+        .info ul { margin: 5px 0 0 0; padding-left: 20px; }
     </style>
 </head>
 <body>
 
     <h1>PII Redact Demo</h1>
     <p>Test the TypeScript library purely in your browser using DefaultMatchers.</p>
+
+    <div class="info">
+        <strong>Note on Default Matchers:</strong> The library uses strict structural matching by default to avoid false positives (like redacting generic math equations or order IDs). Test these formats:
+        <ul>
+            <li><strong>Phone:</strong> 10-digit formats (e.g., <code>123-456-7890</code> or <code>(555) 123-4567</code>)</li>
+            <li><strong>SSN:</strong> Exactly 9 digits formatted as 3-2-4 (e.g., <code>123-45-6789</code>)</li>
+            <li><strong>Credit Card:</strong> 16-19 valid digits (e.g., <code>4111222233334444</code>)</li>
+            <li><strong>Email:</strong> Standard email (e.g., <code>admin@example.com</code>)</li>
+            <li><strong>IPv4 / Mentions:</strong> e.g., <code>192.168.1.1</code> or <code>@username</code></li>
+        </ul>
+    </div>
 
     <div class="strategies">
         <label><strong>Strategy:</strong></label>
