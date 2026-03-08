@@ -1,6 +1,10 @@
 # PII Redact
 
-A lightweight and extensible TypeScript library for identifying and redacting Personally Identifiable Information (PII) from both unstructured text and structured objects.
+![NPM Version](https://img.shields.io/npm/v/pii-redact?style=flat-square&color=blue)
+![NPM License](https://img.shields.io/npm/l/pii-redact?style=flat-square)
+![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue?style=flat-square&logo=typescript)
+
+A lightweight, zero-dependency (core), and highly extensible library for identifying and redacting Personally Identifiable Information (PII) from text, HTML, and JSON objects. Perfect for complying with GDPR, CCPA, and general data privacy standards.
 
 ## Installation
 
