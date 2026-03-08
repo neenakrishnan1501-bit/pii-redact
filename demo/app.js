@@ -1,4 +1,4 @@
-import { Redactor, DefaultMatchers, ReplaceStrategy, MaskStrategy, HashStrategy } from 'pii-redact';
+import { Redactor, DefaultMatchers, ReplaceStrategy, MaskStrategy, HashStrategy, NlpMatcher } from 'pii-redact';
 
 document.addEventListener('DOMContentLoaded', () => {
   const inputEl = document.getElementById('input');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const redactor = new Redactor({
-      matchers: DefaultMatchers,
+      matchers: [new NlpMatcher(), ...DefaultMatchers],
       defaultStrategy: strategy
     });
 
