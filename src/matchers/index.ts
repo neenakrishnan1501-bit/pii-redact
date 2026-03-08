@@ -91,7 +91,8 @@ export const MentionMatcher = new RegexMatcher(
 export const DriverLicenseMatcher = new RegexMatcher(
   "driver_license",
   // Varies heavily by state. Covers alphanumeric formats of 7-14 chars commonly seen in the US.
-  /\b[A-Za-z0-9]{7,14}\b/g,
+  // Using positive lookahead (?=.*[0-9]) to ensure it has at least one number, preventing normal 7-14 letter words from matching.
+  /\b(?=.*[0-9])[A-Za-z0-9]{7,14}\b/g,
 );
 
 export const DateOfBirthMatcher = new RegexMatcher(
