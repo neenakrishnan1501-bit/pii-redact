@@ -13,6 +13,8 @@ export interface MatchResult {
   value: string;
   start: number;
   end: number;
+  /** Optional override for the strategy replacement name */
+  name?: string;
 }
 
 export interface RedactionStrategy {

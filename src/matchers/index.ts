@@ -91,7 +91,8 @@ export const MentionMatcher = new RegexMatcher(
 export const DriverLicenseMatcher = new RegexMatcher(
   "driver_license",
   // Varies heavily by state. Covers alphanumeric formats of 7-14 chars commonly seen in the US.
-  /\b[A-Za-z0-9]{7,14}\b/g,
+  // Using positive lookahead (?=.*[0-9]) to ensure it has at least one number, preventing normal 7-14 letter words from matching.
+  /\b(?=.*[0-9])[A-Za-z0-9]{7,14}\b/g,
 );
 
 export const DateOfBirthMatcher = new RegexMatcher(
@@ -99,3 +100,5 @@ export const DateOfBirthMatcher = new RegexMatcher(
   // Matches common DOB formats: MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, MM-DD-YYYY, etc.
   /\b(?:(?:0?[1-9]|1[0-2])[-/](?:0?[1-9]|[12][0-9]|3[01])[-/](?:19|20)\d{2}|(?:19|20)\d{2}[-/](?:0?[1-9]|1[0-2])[-/](?:0?[1-9]|[12][0-9]|3[01]))\b/g,
 );
+
+export * from './nlp';

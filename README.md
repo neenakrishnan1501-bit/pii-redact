@@ -130,6 +130,41 @@ console.log(redactor.redact('My SSN is 123-45-6789'));
 // Output: "My SSN is a3b8d... [sha256 hash]"
 ```
 
+### Advanced: NLP Named Entity Recognition
+
+By default, the library uses extremely fast RegEx matchers. However, RegEx is purely structural and cannot reliably detect things like People's names or specific Geographic locations without context.
+
+To solve this, `pii-redact` ships with an optional Natural Language Processing (NLP) integration via `compromise`. It intelligently reads the context of a sentence to detect **People, Organizations, and Locations**.
+
+Because NLP adds a slight performance overhead and dependency weight, it is *not* included in `DefaultMatchers`. You must explicitly import it if you want context-aware redaction.
+
+```typescript
+import { Redactor, NlpMatcher, DefaultMatchers } from 'pii-redact';
+
+// Combine the NLP Matcher with standard RegEx Matchers
+const redactor = new Redactor({ 
+  matchers: [
+    new NlpMatcher(), // Detects People, Orgs, Locations
+    ...DefaultMatchers // Detects Phones, Emails, SSNs, etc.
+  ]
+});
+
+const text = "John Smith flew to Chicago to visit Microsoft on his (555) 123-4567 phone.";
+
+console.log(redactor.redact(text));
+// Output: "[PERSON] flew to [LOCATION] to visit [ORG] on his [PHONE] phone."
+```
+
+You can optionally configure what the `NlpMatcher` specifically looks for:
+
+```typescript
+new NlpMatcher({
+  detectPeople: true,
+  detectOrganizations: false,
+  detectLocations: false
+})
+```
+
 ## Custom Matchers & Strategies
 
 You can easily extend the library by implementing the `Matcher` or `RedactionStrategy` interfaces.

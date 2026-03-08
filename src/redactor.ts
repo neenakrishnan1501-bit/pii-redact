@@ -24,7 +24,7 @@ export class Redactor {
     for (const matcher of this.matchers) {
       const results = matcher.match(text);
       for (const result of results) {
-        const replacement = this.defaultStrategy.apply(result.value, matcher.name);
+        const replacement = this.defaultStrategy.apply(result.value, result.name || matcher.name);
         allMatches.push({ start: result.start, end: result.end, replacement });
       }
     }

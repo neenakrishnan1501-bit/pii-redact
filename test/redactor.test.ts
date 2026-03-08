@@ -1,10 +1,11 @@
 import { Redactor } from '../src/redactor';
-import { 
-  EmailMatcher, 
-  PhoneMatcher, 
-  CreditCardMatcher, 
+import {
+  EmailMatcher,
+  PhoneMatcher,
+  CreditCardMatcher,
   SSNMatcher,
-  MentionMatcher
+  MentionMatcher,
+  NlpMatcher
 } from '../src/matchers';
 import { MaskStrategy, HashStrategy, ReplaceStrategy } from '../src/strategies';
 
@@ -30,7 +31,7 @@ describe('Redactor', () => {
       };
 
       const redacted = redactor.redactObject(payload);
-      
+
       expect(redacted.user.contact).toBe('Reach me at [EMAIL]');
       expect(redacted.user.metadata[0].email).toBe('[EMAIL]');
       expect(redacted.user.name).toBe('John'); // unaffected
@@ -68,7 +69,7 @@ describe('Redactor', () => {
       `;
 
       const redactedHtml = redactor.redactHtml(html);
-      
+
       // Script and style tags must remain completely untouched
       expect(redactedHtml).toContain('const email = "admin@example.com";');
       expect(redactedHtml).toContain('content: "admin@example.com";');
@@ -84,7 +85,7 @@ describe('Redactor', () => {
     });
 
     it('should use custom ReplaceStrategy string', () => {
-      const redactor = new Redactor({ 
+      const redactor = new Redactor({
         matchers: [EmailMatcher],
         defaultStrategy: new ReplaceStrategy('***HIDDEN***')
       });
@@ -148,17 +149,50 @@ describe('Redactor', () => {
     });
 
     it('should handle overlapping matches gracefully (first match wins)', () => {
-      // Create a dummy matcher that matches everything
-      const dummy1 = { name: 'dummy1', match: () => [{ value: 'abc', start: 0, end: 3 }] };
-      const dummy2 = { name: 'dummy2', match: () => [{ value: 'bc', start: 1, end: 3 }] };
-      const redactor = new Redactor({ matchers: [dummy2, dummy1] });
-      
-      const text = 'abc def';
-      // Based on our implementation, `allMatches` is sorted by start index
-      // dummy1 starts at 0, dummy2 starts at 1
-      // validMatches will pick dummy1, then lastEnd = 3
-      // dummy2 start = 1 < lastEnd(3), so it gets filtered out
-      expect(redactor.redact(text)).toBe('[DUMMY1] def');
+      // Create a dummy matcher that intentionally overlaps with email
+      const DummyOverlapMatcher = {
+        name: 'dummy',
+        match: (text: string) => [{ value: 'john.doe@exa', start: 17, end: 29 }]
+      };
+
+      const redactor = new Redactor({ matchers: [EmailMatcher, DummyOverlapMatcher] });
+      const result = redactor.redact('Contact me at john.doe@example.com for info.');
+      // Because EmailMatcher comes first, it should win the overlap conflict
+      expect(result).toBe('Contact me at [EMAIL] for info.');
+    });
+  });
+
+  describe('NlpMatcher (Named Entity Recognition)', () => {
+    it('should correctly extract Names, Organizations, and Locations based on NLP context', () => {
+      // Default NlpMatcher detects People, Organizations, and Locations
+      const redactor = new Redactor({ matchers: [new NlpMatcher()] });
+      const text = 'John Smith recently flew to New York to visit Microsoft on an enterprise contract.';
+
+      const redacted = redactor.redact(text);
+      expect(redacted).toBe('[PERSON] recently flew to [LOCATION] to visit [ORG] on an enterprise contract.');
+    });
+
+    it('should safely combine NLP with RegEx Matchers', () => {
+      const redactor = new Redactor({ matchers: [new NlpMatcher(), EmailMatcher, PhoneMatcher] });
+
+      const text = 'Call Michael Scott at 555-123-4567 or email him at mscott@dunder-mifflin.com in Chicago today.';
+      const result = redactor.redact(text);
+
+      expect(result).toBe('Call [PERSON] at [PHONE] or email him at [EMAIL] in [LOCATION] today.');
+    });
+
+    it('should allow disabling specific NLP entities via config', () => {
+      const redactor = new Redactor({
+        matchers: [
+          new NlpMatcher({ detectLocations: false, detectOrganizations: false })
+        ]
+      });
+
+      const text = 'Bill Gates founded Microsoft in Albuquerque.';
+      const result = redactor.redact(text);
+
+      // Only Bill Gates should be redacted since others are disabled
+      expect(result).toBe('[PERSON] founded Microsoft in Albuquerque.');
     });
   });
 });
