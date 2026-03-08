@@ -1,6 +1,6 @@
 {
   "name": "pii-redact",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight and extensible library for identifying and redacting Personally Identifiable Information (PII) from structured and unstructured text.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -26,8 +26,21 @@
     "type": "git",
     "url": "git+https://github.com/neenakrishnan1501-bit/pii-redact.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "pii",
+    "redact",
+    "redaction",
+    "privacy",
+    "security",
+    "gdpr",
+    "ccpa",
+    "nlp",
+    "named-entity-recognition",
+    "obfuscation",
+    "masking"
+  ],
+  "author": "Neena Krishnan",
+  "funding": "https://github.com/sponsors/neenakrishnan1501-bit",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/neenakrishnan1501-bit/pii-redact/issues"
