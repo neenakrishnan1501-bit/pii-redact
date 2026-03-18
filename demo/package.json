@@ -21,6 +21,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "pii-redact": "file:.."
+    "pii-redact": "file:..",
+    "util": "^0.12.5"
   }
 }

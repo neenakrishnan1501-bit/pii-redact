@@ -36,3 +36,11 @@ export interface RedactorConfig {
   /** The default fallback strategy if a specific matcher doesn't override it */
   defaultStrategy?: RedactionStrategy;
 }
+
+export interface RedactObjectOptions {
+  /** Array of specific property keys to redact. If provided, ONLY these keys will be redacted. */
+  keysToRedact?: string[];
+  
+  /** Array of property keys to completely ignore and skip redacting. */
+  ignoreKeys?: string[];
+}

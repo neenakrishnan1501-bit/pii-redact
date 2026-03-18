@@ -48,12 +48,44 @@
         <div class="panel">
             <label for="input"><strong>Raw Text Input:</strong></label>
             <textarea id="input" placeholder="Type text with PII here (e.g. My email is john@example.com and phone is 555-123-4567...)"></textarea>
-            <button id="redact-btn">Redact Text</button>
+            <button id="redact-btn" style="background:#007bff;">Redact Text</button>
         </div>
 
         <div class="panel">
             <label><strong>Redacted Output:</strong></label>
             <div id="output" class="output"></div>
+        </div>
+    </div>
+
+    <hr style="margin-top: 40px; border-color: #ddd;">
+
+    <h2>Advanced: Structured JSON Redaction</h2>
+    <p>Using the newly added <code>options</code> for <code>redactObject</code>. Specify keys to target or ignore during recursive redaction.</p>
+    
+    <div class="strategies">
+        <div style="flex:1;">
+            <label><strong>Keys to Redact</strong> (comma separated):</label><br>
+            <input type="text" id="json-keys-to-redact" placeholder="e.g. email, phone" style="width:100%; padding:5px; margin-top:5px; border-radius:3px; border:1px solid #ccc;">
+            <small style="color: #666;">If provided, only these exact keys will be processed.</small>
+        </div>
+        <div style="flex:1;">
+            <label><strong>Ignore Keys</strong> (comma separated):</label><br>
+            <input type="text" id="json-ignore-keys" placeholder="e.g. publicProfile, metadata" style="width:100%; padding:5px; margin-top:5px; border-radius:3px; border:1px solid #ccc;">
+            <small style="color: #666;">If provided, these object paths will be skipped entirely.</small>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <label for="json-input"><strong>Raw JSON Input:</strong></label>
+            <textarea id="json-input" placeholder="Paste some JSON here..."></textarea>
+            <button id="json-redact-btn" style="background:#28a745;">Redact Object</button>
+            <div id="json-error" style="color: red; font-size: 13px; margin-top: 5px;"></div>
+        </div>
+
+        <div class="panel">
+            <label><strong>Redacted JSON Output:</strong></label>
+            <div id="json-output" class="output" style="background: #f8f9fa;"></div>
         </div>
     </div>
 

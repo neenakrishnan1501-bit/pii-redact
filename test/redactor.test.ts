@@ -37,6 +37,48 @@ describe('Redactor', () => {
       expect(redacted.user.name).toBe('John'); // unaffected
       expect(redacted.user.metadata[1].id).toBe(123); // unaffected
     });
+
+    it('should only redact specific keys if keysToRedact is provided', () => {
+      const redactor = new Redactor({ matchers: [EmailMatcher] });
+      const payload = {
+        publicEmail: 'public@example.com',
+        privateEmail: 'private@example.com'
+      };
+      
+      const redacted = redactor.redactObject(payload, { keysToRedact: ['privateEmail'] });
+      
+      expect(redacted.publicEmail).toBe('public@example.com');
+      expect(redacted.privateEmail).toBe('[EMAIL]');
+    });
+
+    it('should recursively redact matching keys in nested objects based on keysToRedact', () => {
+      const redactor = new Redactor({ matchers: [PhoneMatcher] });
+      const payload = {
+        users: [
+          { phone: '555-123-4567', id: '123-456' },
+          { mobile: '555-987-6543' }
+        ]
+      };
+      
+      const redacted = redactor.redactObject(payload, { keysToRedact: ['phone'] });
+      
+      expect(redacted.users[0].phone).toBe('[PHONE]');
+      expect(redacted.users[0].id).toBe('123-456'); // Not affected
+      expect(redacted.users[1].mobile).toBe('555-987-6543'); // Not affected because key is 'mobile'
+    });
+
+    it('should completely skip object traversal for ignoreKeys', () => {
+      const redactor = new Redactor({ matchers: [EmailMatcher] });
+      const payload = {
+        users: { email: 'user@example.com' },
+        metadata: { email: 'admin@example.com', other: 'data' }
+      };
+
+      const redacted = redactor.redactObject(payload, { ignoreKeys: ['metadata'] });
+
+      expect(redacted.users.email).toBe('[EMAIL]');
+      expect(redacted.metadata.email).toBe('admin@example.com'); // Skipped entirely
+    });
   });
 
   describe('HTML Redaction', () => {

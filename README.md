@@ -6,6 +6,15 @@
 
 A lightweight, zero-dependency (core), and highly extensible library for identifying and redacting Personally Identifiable Information (PII) from text, HTML, and JSON objects. Perfect for complying with GDPR, CCPA, and general data privacy standards.
 
+## Why Use `pii-redact`?
+
+In an era of strict data confidentiality, preventing the leakage of **Personally Identifiable Information (PII)** is crucial to avoid severe compliance penalties and protect user privacy. `pii-redact` is an extremely fast and reliable utility designed for Node.js and the browser to address common security use-cases:
+
+- 🛡️ **Comprehensive Data Protection & Compliance**: Ensures that your application correctly handles sensitive data, checking the boxes for **HIPAA**, **GDPR**, **CCPA**, and **SOC2** audits.
+- 📜 **Log Sanitization & Observability**: Clean network payloads and server logs seamlessly so you never mistakenly store unencrypted credit cards, SSNs, or emails in logging tools like Datadog, Splunk, or Sentry.
+- 🕵️ **Data Anonymization / De-identification**: Safely scrape, extract, and share real-world datasets for testing or analytics by masking, replacing, or cryptographically hashing private data.
+- 🤖 **Secure LLM & AI Pipelines**: Prevent proprietary user data from bleeding out into your Large Language Model prompts. Redact individuals, physical locations, and corporate names securely using cutting-edge Natural Language Processing (Named Entity Recognition).
+
 ## Installation
 
 ```bash

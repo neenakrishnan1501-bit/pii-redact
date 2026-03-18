@@ -1,4 +1,4 @@
-import { Matcher, RedactionStrategy, RedactorConfig } from './types';
+import { Matcher, RedactionStrategy, RedactorConfig, RedactObjectOptions } from './types';
 import { ReplaceStrategy } from './strategies';
 import { parse, TextNode, HTMLElement } from 'node-html-parser';
 
@@ -59,21 +59,39 @@ export class Redactor {
   /**
    * Recursively traverses an object or array and redacts any string values found.
    */
-  public redactObject<T>(obj: T): T {
+  public redactObject<T>(obj: T, options?: RedactObjectOptions, currentKey?: string): T {
     if (obj === null || obj === undefined) return obj;
 
     if (typeof obj === 'string') {
+      if (options?.keysToRedact) {
+        if (!currentKey || !options.keysToRedact.includes(currentKey)) {
+          return obj as unknown as T;
+        }
+        
+        const redacted = this.redact(obj);
+        // If the user explicitly requested this key to be redacted, but no internal structural 
+        // regex match was found inside the string, forcefully redact the entire string using the key name.
+        if (redacted === obj && currentKey) {
+          return this.defaultStrategy.apply(obj, currentKey.toUpperCase()) as unknown as T;
+        }
+        
+        return redacted as unknown as T;
+      }
       return this.redact(obj) as unknown as T;
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.redactObject(item)) as unknown as T;
+      return obj.map(item => this.redactObject(item, options, currentKey)) as unknown as T;
     }
 
     if (typeof obj === 'object') {
       const result: any = {};
       for (const [key, value] of Object.entries(obj)) {
-        result[key] = this.redactObject(value);
+        if (options?.ignoreKeys?.includes(key)) {
+          result[key] = value;
+          continue;
+        }
+        result[key] = this.redactObject(value, options, key);
       }
       return result as T;
     }
