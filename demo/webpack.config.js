@@ -13,7 +13,8 @@ module.exports = {
       "stream": require.resolve("stream-browserify"),
       "vm": require.resolve("vm-browserify"),
       "buffer": require.resolve("buffer/"),
-      "string_decoder": require.resolve("string_decoder/")
+      "string_decoder": require.resolve("string_decoder/"),
+      "util": require.resolve("util/")
     }
   },
   plugins: [
