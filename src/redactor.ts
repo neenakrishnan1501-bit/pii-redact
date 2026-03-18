@@ -58,6 +58,10 @@ export class Redactor {
 
   /**
    * Recursively traverses an object or array and redacts any string values found.
+   * 
+   * @param obj The payload to redact.
+   * @param options Configuration for targeting or ignoring specific object keys.
+   * @param currentKey Internal parameter used for tracking the recursive JSON tree.
    */
   public redactObject<T>(obj: T, options?: RedactObjectOptions, currentKey?: string): T {
     if (obj === null || obj === undefined) return obj;
