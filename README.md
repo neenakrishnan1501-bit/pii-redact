@@ -79,6 +79,36 @@ console.log(safePayload.user.contactDetails); // "Contact me at [PHONE]"
 console.log(safePayload.user.emails[0]);      // "[EMAIL]"
 ```
 
+#### Advanced: Targeting Specific JSON Keys
+
+For large payloads, you can specify an extra options object to explicitly tell the redactor which object keys it should target (or ignore entirely).
+
+```typescript
+const payload = {
+  id: "user_123",            // We might want to keep this
+  username: "jdoe99",         // Targeted for explicit redaction
+  publicProfile: { 
+    bio: "Software Engineer" // Ignored entirely
+  },
+  privateData: {
+    email: "john@example.com"
+  }
+};
+
+const safePayload = redactor.redactObject(payload, {
+  // If provided, the redactor will ONLY process these specific keys.
+  // It will forcefully redact their values using the Key name if no standard regex matches!
+  keysToRedact: ['username', 'email'], 
+  
+  // Entire logical branches to skip processing (saves performance and avoids false hits)
+  ignoreKeys: ['publicProfile']
+});
+
+console.log(safePayload.username); // "[USERNAME]"
+console.log(safePayload.publicProfile.bio); // "Software Engineer" (unaffected)
+console.log(safePayload.id); // "user_123" (unaffected)
+```
+
 ### HTML Redaction
 
 If you have raw HTML and want to redact the visible text *without* breaking tags or attributes, use `.redactHtml()`:
